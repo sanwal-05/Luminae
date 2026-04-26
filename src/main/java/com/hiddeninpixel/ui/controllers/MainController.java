@@ -1,7 +1,6 @@
 package com.hiddeninpixel.ui.controllers;
 
 import com.hiddeninpixel.core.*;
-import com.hiddeninpixel.exception.StegoException;
 import com.hiddeninpixel.service.ImageProcessor;
 import com.hiddeninpixel.service.AnalyticsService;
 import javafx.application.Platform;

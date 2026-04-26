@@ -12,7 +12,6 @@ public class SecurityProvider {
     
     private static final byte[] SALT = "HiddenInPixel2025".getBytes();
     private static final int ITERATIONS = 10000;
-    private static final int KEY_LENGTH = 256;
     
     /**
      * Derives deterministic keystream from password using PBKDF2.
