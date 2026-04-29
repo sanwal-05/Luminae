@@ -231,8 +231,8 @@ CREATE TABLE analytics_records (
 
 ### Run
 ```bash
-git clone https://github.com/sanwal-05/Hidden-In-Pixel.git
-cd Hidden-In-Pixel
+git clone https://github.com/sanwal-05/Luminae.git
+cd Luminae
 mvn clean compile
 mvn javafx:run
 ```
