@@ -8,33 +8,51 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.geometry.Insets?>
 
+<!--
+  analytics.fxml defines the layout for the Analytics and Forensics tab.
+  It is loaded inside main.fxml via <fx:include source="analytics.fxml"/>.
+  The controller for this layout is AnalyticsController.java.
+  
+  This tab has two sub-tabs:
+  1. Analytics Overview: pie chart and bar chart
+  2. Operation History: table of all past encode/decode operations
+-->
 <VBox spacing="20" alignment="TOP_CENTER" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.hiddeninpixel.ui.controllers.AnalyticsController"
       prefWidth="1100" prefHeight="700">
     <padding><Insets top="20" left="40" right="40" bottom="20"/></padding>
-    
+
+    <!-- Page title label -->
     <Label text="Operation History &amp; Comparative Analytics" style="-fx-font-size: 20px; -fx-text-fill: #e2e8f0; -fx-font-weight: bold;"/>
-    
+
+    <!-- Inner TabPane with two sub-tabs inside the Analytics tab -->
     <TabPane VBox.vgrow="ALWAYS" styleClass="floating">
+
+        <!-- SUB-TAB 1: Charts showing aggregate statistics -->
         <Tab text="Analytics Overview" closable="false">
             <VBox spacing="20" style="-fx-background-color: #0f172a;">
                 <padding><Insets top="20" left="20" right="20" bottom="20"/></padding>
-                
+
+                <!-- Two-column row: pie chart on the left, bar chart on the right -->
                 <HBox spacing="20" alignment="CENTER" VBox.vgrow="ALWAYS">
-                    <!-- Pie Chart Column -->
+
+                    <!-- LEFT: Pie chart showing algorithm usage distribution -->
                     <VBox spacing="10" HBox.hgrow="ALWAYS" alignment="TOP_CENTER">
+                        <!-- The fx:id connects to "algorithmUsageChart" in AnalyticsController -->
                         <PieChart fx:id="algorithmUsageChart" animated="true" title="Algorithm Usage Distribution" legendSide="BOTTOM" styleClass="chart"/>
+                        <!-- Caption box below the chart -->
                         <VBox spacing="5" style="-fx-background-color: #1e293b; -fx-padding: 15; -fx-background-radius: 8; -fx-border-color: #334155; -fx-border-radius: 8;">
                             <Label text="Pie Chart Insight" style="-fx-font-size: 14px; -fx-text-fill: #3b82f6; -fx-font-weight: bold;"/>
                             <TextFlow>
-                                <Text style="-fx-fill: #94a3b8;" 
+                                <Text style="-fx-fill: #94a3b8;"
                                       text="Visualizes which steganography methods are most frequently employed in your operations."/>
                             </TextFlow>
                         </VBox>
                     </VBox>
-                    
-                    <!-- Bar Chart Column -->
+
+                    <!-- RIGHT: Bar chart showing average payload size per algorithm -->
                     <VBox spacing="10" HBox.hgrow="ALWAYS" alignment="TOP_CENTER">
+                        <!-- The fx:id connects to "metricsChart" in AnalyticsController -->
                         <BarChart fx:id="metricsChart" animated="true" title="Avg Payload Size (KB) per Algorithm" legendSide="BOTTOM" styleClass="chart">
                             <xAxis>
                                 <CategoryAxis label="Algorithm" side="BOTTOM" animated="true"/>
@@ -43,10 +61,11 @@
                                 <NumberAxis label="Average Size (KB)" side="LEFT" animated="true"/>
                             </yAxis>
                         </BarChart>
+                        <!-- Caption box below the chart -->
                         <VBox spacing="5" style="-fx-background-color: #1e293b; -fx-padding: 15; -fx-background-radius: 8; -fx-border-color: #334155; -fx-border-radius: 8;">
                             <Label text="Bar Chart Insight" style="-fx-font-size: 14px; -fx-text-fill: #3b82f6; -fx-font-weight: bold;"/>
                             <TextFlow>
-                                <Text style="-fx-fill: #94a3b8;" 
+                                <Text style="-fx-fill: #94a3b8;"
                                       text="Displays the average amount of data (in KB) successfully hidden using each specific technique."/>
                             </TextFlow>
                         </VBox>
@@ -54,24 +73,49 @@
                 </HBox>
             </VBox>
         </Tab>
-        
+
+        <!-- SUB-TAB 2: Full table of every recorded operation -->
         <Tab text="Operation History" closable="false">
             <VBox spacing="10" style="-fx-background-color: #0f172a;">
                 <padding><Insets top="20" left="20" right="20" bottom="20"/></padding>
+
+                <!--
+                  The main table. VBox.vgrow="ALWAYS" makes it expand to fill available height.
+                  Each TableColumn has an fx:id that connects to a variable in AnalyticsController.
+                  prefWidth sets the starting width of each column.
+                -->
                 <TableView fx:id="analyticsTable" VBox.vgrow="ALWAYS">
                     <columns>
+                        <!-- Auto-generated unique row ID from the database -->
                         <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+
+                        <!-- Which algorithm was used (e.g. Sequential LSB) -->
                         <TableColumn fx:id="algorithmColumn" text="Algorithm" prefWidth="180"/>
-                        <TableColumn fx:id="resolutionColumn" text="Resolution" prefWidth="150"/>
-                        <TableColumn fx:id="sizeColumn" text="Payload (KB)" prefWidth="120"/>
-                        <TableColumn fx:id="ratioColumn" text="Change Ratio (%)" prefWidth="120"/>
-                        <TableColumn fx:id="timestampColumn" text="Timestamp" prefWidth="200"/>
+
+                        <!-- Width x Height of the image used (e.g. 1920x1080) -->
+                        <TableColumn fx:id="resolutionColumn" text="Resolution" prefWidth="130"/>
+
+                        <!-- How many kilobytes of data were hidden -->
+                        <TableColumn fx:id="sizeColumn" text="Payload (KB)" prefWidth="110"/>
+
+                        <!-- What percentage of pixels were changed by the hiding process -->
+                        <TableColumn fx:id="ratioColumn" text="Change Ratio (%)" prefWidth="130"/>
+
+                        <!-- When the operation happened (Unix timestamp in milliseconds) -->
+                        <TableColumn fx:id="timestampColumn" text="Timestamp" prefWidth="160"/>
+
+                        <!-- Editable text field for user notes. Double-click a cell to edit. -->
+                        <TableColumn fx:id="detailsColumn" text="Details / Notes" prefWidth="200"/>
+
+                        <!-- Delete button column. Each row gets its own red X button. -->
+                        <TableColumn fx:id="deleteColumn" text="Delete" prefWidth="70"/>
                     </columns>
                 </TableView>
             </VBox>
         </Tab>
 
     </TabPane>
-    
+
+    <!-- Refresh button at the bottom re-loads all data from the database -->
     <Button text="Refresh Analytics Data" onAction="#refreshData" prefWidth="300" style="-fx-padding: 10px;"/>
 </VBox>

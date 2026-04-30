@@ -5,81 +5,105 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml" 
+<!--
+  main.fxml defines the layout of the entire main window.
+  It is read by JavaFX at startup. Each element here becomes a real UI component.
+  fx:id attributes connect elements to Java variables in MainController.java.
+  onAction="#methodName" connects buttons to methods in the controller.
+-->
+<BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.hiddeninpixel.ui.controllers.MainController"
             prefWidth="1200" prefHeight="800">
-    
+
+    <!-- TOP: The header bar that shows the app name -->
     <top>
         <HBox alignment="CENTER" spacing="20" styleClass="header">
             <padding><Insets top="15" bottom="15"/></padding>
-            <Label text="Hidden-In-Pixel" style="-fx-font-size: 24px; -fx-text-fill: #f8fafc; -fx-font-weight: bold;"/>
+            <!-- App name label, big and bold -->
+            <Label text="Luminae" style="-fx-font-size: 24px; -fx-text-fill: #f8fafc; -fx-font-weight: bold;"/>
+            <!-- Subtitle label, smaller and blue -->
             <Label text="Steganography Suite" style="-fx-font-size: 16px; -fx-text-fill: #3b82f6;"/>
         </HBox>
     </top>
-    
+
+    <!-- CENTER: The main tab panel. Contains Encode, Decode, and Analytics tabs -->
     <center>
         <TabPane fx:id="mainTabPane">
             <tabs>
-                <!-- ENCODE TAB -->
+
+                <!-- ENCODE TAB: The user hides a secret message inside an image here -->
                 <Tab text="Encode (Hide)" closable="false">
                     <VBox spacing="20" alignment="TOP_CENTER">
                         <padding><Insets top="30" left="60" right="60" bottom="20"/></padding>
-                        
+
+                        <!-- Two-column layout: left = image drop zone, right = settings and message -->
                         <HBox spacing="30" alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
-                            <!-- Left Column: Image Drop Zone -->
+
+                            <!-- LEFT COLUMN: Image drop zone -->
                             <VBox spacing="10" alignment="CENTER" HBox.hgrow="ALWAYS">
                                 <Label text="Cover Image"/>
+                                <!-- StackPane layers the instruction text and the image preview on top of each other -->
                                 <StackPane fx:id="encodeDropZone" styleClass="drop-zone" prefWidth="450" prefHeight="350">
+                                    <!-- Instruction text shown before an image is loaded -->
                                     <VBox alignment="CENTER" spacing="10">
                                         <Label text="Drag &amp; Drop Image Here" style="-fx-text-fill: #94a3b8; -fx-font-size: 16px;"/>
                                         <Label text="or click to browse" style="-fx-text-fill: #64748b;"/>
                                         <Button text="Browse File" onAction="#handleLoadEncodeImage"/>
                                     </VBox>
+                                    <!-- Image preview, hidden until an image is loaded -->
                                     <ImageView fx:id="encodeImageView" fitWidth="430" fitHeight="330" preserveRatio="true" visible="false"/>
                                 </StackPane>
+                                <!-- Clear button, hidden until an image is loaded -->
                                 <Button text="Clear" onAction="#handleClearEncodeImage" visible="false" fx:id="clearEncodeBtn"/>
                             </VBox>
-                            
-                            <!-- Right Column: Settings & Input -->
+
+                            <!-- RIGHT COLUMN: Algorithm picker, password, message input -->
                             <VBox spacing="20" HBox.hgrow="SOMETIMES" prefWidth="400">
+                                <!-- Algorithm dropdown -->
                                 <VBox spacing="5">
                                     <Label text="Algorithm:"/>
                                     <ComboBox fx:id="encodeAlgorithmCombo" maxWidth="Infinity"/>
                                 </VBox>
-                                
+
+                                <!-- Password field -->
                                 <VBox spacing="5">
                                     <Label text="Password / Key:"/>
                                     <PasswordField fx:id="encodePasswordField" promptText="Optional for Sequential"/>
                                 </VBox>
-                                
+
+                                <!-- Message text area with live character count below it -->
                                 <VBox spacing="5" VBox.vgrow="ALWAYS">
                                     <Label text="Secret Message:"/>
                                     <TextArea fx:id="encodeMessageArea" promptText="Enter the text to hide within the image..." wrapText="true" VBox.vgrow="ALWAYS"/>
                                     <HBox spacing="10" alignment="CENTER_LEFT">
+                                        <!-- Shows "Characters: X / Y" -->
                                         <Label fx:id="encodeCharCountLabel" text="Characters: 0 / 0" style="-fx-text-fill: #94a3b8;"/>
+                                        <!-- Red warning, only shown when message exceeds capacity -->
                                         <Label fx:id="encodeWarningLabel" text="Message exceeds capacity!" style="-fx-text-fill: #ef4444;" visible="false" managed="false"/>
                                     </HBox>
                                 </VBox>
-                                
+
+                                <!-- The main encode button -->
                                 <Button fx:id="encodeBtn" text="Hide Message &amp; Save" onAction="#handleEncode" maxWidth="Infinity" style="-fx-padding: 15px; -fx-font-size: 16px;"/>
                             </VBox>
                         </HBox>
-                        
-                        <!-- Status Bar -->
+
+                        <!-- Status bar at the bottom: progress bar + text status -->
                         <HBox alignment="CENTER_LEFT" spacing="20">
                             <ProgressBar fx:id="encodeProgressBar" prefWidth="300" progress="0.0"/>
                             <Label fx:id="encodeStatusLabel" styleClass="status-label" text="Ready to Encode"/>
                         </HBox>
                     </VBox>
                 </Tab>
-                
-                <!-- DECODE TAB -->
+
+                <!-- DECODE TAB: The user extracts a hidden message from a stego image here -->
                 <Tab text="Decode (Extract)" closable="false">
                     <VBox spacing="20" alignment="TOP_CENTER">
                         <padding><Insets top="30" left="60" right="60" bottom="20"/></padding>
-                        
+
                         <HBox spacing="30" alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
-                            <!-- Left Column: Image Drop Zone -->
+
+                            <!-- LEFT COLUMN: Stego image drop zone -->
                             <VBox spacing="10" alignment="CENTER" HBox.hgrow="ALWAYS">
                                 <Label text="Stego Image (Contains secret)"/>
                                 <StackPane fx:id="decodeDropZone" styleClass="drop-zone" prefWidth="450" prefHeight="350">
@@ -91,42 +115,45 @@
                                 </StackPane>
                                 <Button text="Clear" onAction="#handleClearDecodeImage" visible="false" fx:id="clearDecodeBtn"/>
                             </VBox>
-                            
-                            <!-- Right Column: Settings & Output -->
+
+                            <!-- RIGHT COLUMN: Algorithm, password, output text area -->
                             <VBox spacing="20" HBox.hgrow="SOMETIMES" prefWidth="400">
                                 <VBox spacing="5">
                                     <Label text="Algorithm used:"/>
                                     <ComboBox fx:id="decodeAlgorithmCombo" maxWidth="Infinity"/>
                                 </VBox>
-                                
+
                                 <VBox spacing="5">
                                     <Label text="Password / Key:"/>
                                     <PasswordField fx:id="decodePasswordField" promptText="Must exactly match the key used to hide"/>
                                 </VBox>
-                                
+
+                                <!-- The extract button triggers the decoding -->
                                 <Button text="Extract Message" onAction="#handleDecode" maxWidth="Infinity" style="-fx-padding: 15px; -fx-font-size: 16px;"/>
-                                
+
+                                <!-- Read-only text area where the extracted message appears -->
                                 <VBox spacing="5" VBox.vgrow="ALWAYS">
                                     <Label text="Extracted Secret Message:"/>
                                     <TextArea fx:id="decodeMessageArea" editable="false" promptText="Message will appear here after extraction..." wrapText="true" VBox.vgrow="ALWAYS"/>
                                 </VBox>
                             </VBox>
                         </HBox>
-                        
-                        <!-- Status Bar -->
+
+                        <!-- Status bar for the decode tab -->
                         <HBox alignment="CENTER_LEFT" spacing="20">
                             <ProgressBar fx:id="decodeProgressBar" prefWidth="300" progress="0.0"/>
                             <Label fx:id="decodeStatusLabel" styleClass="status-label" text="Ready to Decode"/>
                         </HBox>
                     </VBox>
                 </Tab>
-                
-                <!-- ANALYTICS TAB -->
+
+                <!-- ANALYTICS TAB: Loads the analytics layout from a separate fxml file -->
                 <Tab text="Analytics &amp; Forensics" closable="false">
                     <fx:include source="analytics.fxml"/>
                 </Tab>
+
             </tabs>
         </TabPane>
     </center>
-    
+
 </BorderPane>

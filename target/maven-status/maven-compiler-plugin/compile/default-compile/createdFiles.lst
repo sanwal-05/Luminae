@@ -1,3 +1,4 @@
+com/hiddeninpixel/ui/controllers/AnalyticsController$1.class
 com/hiddeninpixel/core/StochasticLSB.class
 com/hiddeninpixel/core/SequentialLSB.class
 com/hiddeninpixel/service/BitManipulator.class
@@ -15,5 +16,6 @@ com/hiddeninpixel/service/AnalyticsService.class
 com/hiddeninpixel/core/MetadataChannel.class
 com/hiddeninpixel/db/DatabaseConnection.class
 com/hiddeninpixel/exception/InsufficientCapacityException.class
+com/hiddeninpixel/ui/controllers/AnalyticsController$1$1.class
 com/hiddeninpixel/model/AnalyticsRecord.class
 com/hiddeninpixel/ui/controllers/MainController.class
